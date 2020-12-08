@@ -14,42 +14,63 @@
           </i-navbar-brand>
           <i-nav>
               <i-nav-item>
-                <span class="">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="theme_icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                <a href="javascript:void(0);" @click="saveFile" class="_float-right _display-flex _align-items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="color: dodgerblue; height: 24px; width: 24px; margin-right: 3px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                   </svg>
-                </span>
-
-                <span class="_text-black">
-                  <!-- <svg xmlns="http://www.w3.org/2000/svg" class="theme_icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg> -->
-                  <svg xmlns="http://www.w3.org/2000/svg" class="theme_icon" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                  </svg>
-                </span>
+                  Save File
+                </a>
               </i-nav-item>
           </i-nav>
         </i-navbar>
       </i-layout-header>
       
-      <i-layout-content>
+      <i-layout-content class="app-section">
           <i-container>
-            <h3 class="_margin-y-1">Open a file</h3>
-            <input type="file" ref="myFile" @change="selectedFile"><br/>
-  
-            <p class="_margin-y-1">OR</p>
-            <h3 class="_margin-y-1">Use online editor</h3>
+            <i-row v-if="!hideIntro" class="_display-flex _align-items-center">
+              <i-column xl="3" lg="6" md="6" sm="8" xs="12">
+                <h3 class="intro-heading">Preview Markdown files with ease</h3>
+                <p class="_text-gray-60">Simply upload a markdown file to view it or Use our editor to write markdown and see its preview.</p>
+              
+                <button class="btn-upload _margin-top-1-2 _margin-bottom-1 _margin-right-1">Upload file</button>
+                <!-- <span class=""> OR </span> -->
+                <button class="btn-noborder" @click="showPreview = true, hideIntro = true">Use Editor</button>
+                <input v-show="false" type="file" ref="myFile" @change="selectedFile">
+              </i-column>
+              <i-column xl="3" lg="6" md="6" sm="8" xs="12">
+                <img src="https://picsum.photos/700" alt="Sample Preview" class="image -responsive">
+              </i-column>
+            </i-row>
+            
+            <i-row v-if="showPreview" class="_display-flex _align-items-stretch _flex-direction-sm-row">
+              
+              <i-column xs="12" class="_display-flex _align-items-center _padding-y-1 _margin-bottom-1">
+                <i-column xs="8" class="_padding-left-0">
+                  
+                  <div class="">
+                    <label for="file_name" class="_margin-y-1-4 _text-gray-50">Document name</label> <br>
+                    <input type="text" v-model="filename" name="file_name" id="file_name" class="save_filename">
+                  </div>
+                </i-column>
+                <i-column xs="4" class="text-counter _text-right">
+                  Words: {{word_count}} <br>
+                  Characters: {{character_count}}
+                </i-column>
+              </i-column>
 
-            <i-row class="._display-flex _align-items-stretch _flex-direction-sm-row">
               <i-column sm="6">
-                <label for="md_text">Your Text</label>
+                <label for="md_text" class="_margin-0 _text-gray-50">
+                  <small class="_margin-bottom-0 _padding-0">Your Text</small>
+                </label>
+                
                 <i-textarea id="md_text" class="_width-100" v-model="mdtext" placeholder="Enter your Markdown text here." rows="15"></i-textarea>
               </i-column>
               
               <i-column sm="6" class="_display-flex _flex-direction-column">
-                <label for="">Markdown Preview</label>
-                <vue-markdown :source="mdtext"  class="preview-box _flex-grow-1"></vue-markdown>
+                <label for="_margin-0 _text-gray-50">
+                  <small for="" class="_margin-bottom-0 _padding-0 _text-gray-50">Markdown Preview</small>
+                </label>
+                <vue-markdown :source="mdtext" class="preview-box"></vue-markdown>
               </i-column>
             </i-row>
 
@@ -73,13 +94,36 @@ export default {
   name: 'App',
   data(){
     return{
-      mdtext: ''
+      mdtext: '',
+      word_count: 0,
+      character_count: 0,
+      filename: 'Untitled.md',
+      fileExtension: 'md',
+      fileUploaded: false,
+      hideIntro: true,
+      showPreview: true
+    }
+  },
+  watch: {
+    mdtext: function(newvalue){
+      this.word_count = newvalue.length;
+      // string[] text = newvalue;
+      if(newvalue != ''){
+        const regexp = /\s/;
+        this.character_count = newvalue.split(regexp).length;
+      }
+      else{
+        this.character_count = 0;
+      }
     }
   },
   components: {
     VueMarkdown
   },
   methods: {
+    wordCount(){
+      console.log("Call word count");
+    },
     selectedFile() {
       console.log('selected a file');
       console.log(this.$refs.myFile.files[0]);
@@ -90,6 +134,7 @@ export default {
       
       if(!file || fileExtension !== 'md') {
         console.log("Invalid FILE: ", file.name);
+        this.showPreview = false;
         return;
       }
       
@@ -98,11 +143,33 @@ export default {
       reader.readAsText(file, "UTF-8");
       reader.onload =  evt => {
         this.mdtext = evt.target.result;
+        this.showPreview = true;
       }
       reader.onerror = evt => {
         console.error(evt);
       }
       
+    },
+
+    saveFile(){
+      const downloadToFile = (content, filename, contentType) => {
+        const downloadlink = document.createElement('a');
+        const file = new Blob([content], {type: contentType});
+        
+        downloadlink.href= URL.createObjectURL(file);
+        downloadlink.download = filename;
+        downloadlink.click();
+
+        URL.revokeObjectURL(downloadlink.href);
+      };
+
+      if(this.mdtext != ''){
+        let saveFileName = this.filename + this.fileExtension;
+        downloadToFile(this.mdtext, saveFileName, 'text/plain');
+      }
+      else{
+        console.log("error: trying to save empty file");
+      }
     }
   }
 }
@@ -126,6 +193,10 @@ $gray700 : #374151;
   height: 100%;
   color: #333;
 
+  .app-section{
+    min-height: calc(100vh - 150px);
+  }
+
   .logo{
     font-family: 'Ranchers', cursive;
     font-size: 1.75rem;
@@ -138,9 +209,55 @@ $gray700 : #374151;
     margin-top: 1rem;
   }
 
+  .intro-heading{
+    font-family: 'Jetbrains Mono';
+    letter-spacing: 1px;
+    line-height: 2rem;
+    font-weight: bold;
+    color: $gray700;
+  }
+
   #md_text{
     font-family: 'JetBrains Mono', monospace;
   }
+
+  .btn-upload{
+    padding: 6px 12px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .btn-noborder{
+    padding: 6px 12px;
+    cursor: pointer;
+    border:none;
+    background: transparent;
+
+    &:hover{
+      color: orange;
+    }
+
+    &:focus{
+      outline:none;
+      color: blue;
+    }
+  }
+  // input for filename
+  .save_filename{
+    width:200px; 
+    font-size: 20px;
+    letter-spacing: 1px;
+    border-bottom:1px solid #eee;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+
+    &:focus{
+      border-bottom: #ccc 1px solid;
+      outline: none;
+    }
+  }
+
 
   .theme_icon{
     color: black;
@@ -150,8 +267,10 @@ $gray700 : #374151;
   .preview-box{
     border: 1px solid #ccc;
     padding-left: 10px;
-    /* height: 100%; */
-    width: 100%;
+    word-wrap: break-word;
+    height: 380px; 
+    overflow: auto;
+    // width: 100%;
     /* height: 15rem; */
   }
 }
