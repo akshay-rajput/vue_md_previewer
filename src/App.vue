@@ -35,7 +35,9 @@
       
       <i-layout-content>
           <i-container>
-            <h3 class="_margin-y-1">Upload a file</h3>
+            <h3 class="_margin-y-1">Open a file</h3>
+            <input type="file" ref="myFile" @change="selectedFile"><br/>
+  
             <p class="_margin-y-1">OR</p>
             <h3 class="_margin-y-1">Use online editor</h3>
 
@@ -54,6 +56,11 @@
           </i-container>          
       </i-layout-content>
       
+      <i-layout-footer class="_background-gray-20 _margin-top-2">
+        <div class="_text-center _padding-y-1-4">
+          Made by Akshay.
+        </div>
+      </i-layout-footer>
     </i-layout>
   
   </div>
@@ -71,50 +78,82 @@ export default {
   },
   components: {
     VueMarkdown
+  },
+  methods: {
+    selectedFile() {
+      console.log('selected a file');
+      console.log(this.$refs.myFile.files[0]);
+      
+      let file = this.$refs.myFile.files[0];
+      // get extension of uploaded file
+      let fileExtension = file.name.split('.').pop();
+      
+      if(!file || fileExtension !== 'md') {
+        console.log("Invalid FILE: ", file.name);
+        return;
+      }
+      
+      // if valid md file, read the contents and display
+      let reader = new FileReader();
+      reader.readAsText(file, "UTF-8");
+      reader.onload =  evt => {
+        this.mdtext = evt.target.result;
+      }
+      reader.onerror = evt => {
+        console.error(evt);
+      }
+      
+    }
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Poppins&family=Ranchers&display=swap');/* font-family: 'Bowlby One SC', cursive;
-font-family: 'JetBrains Mono', monospace;
-font-family: 'Poppins', sans-serif; */
+// font-family: 'JetBrains Mono', monospace;
+// font-family: 'Poppins', sans-serif; */
+
+
+$gray100 : #f3f4f6;
+$gray200 : #e5e7eb;
+$gray400 : #9ca3af;
+$gray700 : #374151;
+
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Poppins', sans-serif;
   height: 100%;
-  background: rgb(98, 93, 133);
-  /* text-align: center; */
   color: #333;
-  /* margin-top: 60px; */
-}
 
-.logo{
-  font-family: 'Ranchers', cursive;
-  font-size: 1.75rem;
-  line-height: 1
+  .logo{
+    font-family: 'Ranchers', cursive;
+    font-size: 1.75rem;
+    line-height: 1
+    }
+
+  h1, h2, h3, h4, h5{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    margin-top: 1rem;
   }
 
-h1, h2, h3, h4, h5{
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
+  #md_text{
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .theme_icon{
+    color: black;
+    height: 28px;
+    width: 28px;
+  }
+  .preview-box{
+    border: 1px solid #ccc;
+    padding-left: 10px;
+    /* height: 100%; */
+    width: 100%;
+    /* height: 15rem; */
+  }
 }
 
-#md_text{
-  font-family: 'JetBrains Mono', monospace;
-}
-
-.theme_icon{
-  color: black;
-  height: 28px;
-  width: 28px;
-}
-.preview-box{
-  border: 1px solid #ccc;
-  padding-left: 10px;
-  /* height: 100%; */
-  width: 100%;
-  /* height: 15rem; */
-}
 </style>
