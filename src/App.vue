@@ -3,14 +3,16 @@
     
     <i-layout>
       <i-layout-header class="_padding-0">
-        <i-navbar :collapse = false>
+        <i-navbar :collapse = false class="_padding-0 app-navbar">
           <i-navbar-brand>
-            <span class="">
-              <svg xmlns="http://www.w3.org/2000/svg" class="theme_icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </span> 
-            <span class="logo">ZAP</span>
+            <a href="javascript:void(0);" class="" @click="hideIntro = false, showPreview = false">
+              <span class="">
+                <svg xmlns="http://www.w3.org/2000/svg" class="svg_icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </span> 
+              <span class="logo">ZAP</span>
+            </a>
           </i-navbar-brand>
           <i-nav class="">
               <!-- <i-nav-item>
@@ -20,9 +22,9 @@
                 </a>
               </i-nav-item>
                -->
-              <i-nav-item v-if="hideIntro">
-                <label for="select_file_navbar" class=" _display-flex _align-items-center _cursor-pointer">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="color: dodgerblue; height: 24px; width: 24px; margin-right: 3px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <i-nav-item v-if="hideIntro" style="margin-top: 4px;">
+                <label for="select_file_navbar" class="btn-nav-upload _display-flex _align-items-center _cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="color: gold; height: 24px; width: 24px; margin-right: 3px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
                   Upload
@@ -35,38 +37,65 @@
       </i-layout-header>
       
       <i-layout-content class="app-section">
-          <i-container>
-            <i-row v-if="!hideIntro" class="_display-flex _align-items-center">
-              <i-column xl="5" lg="6" md="6" sm="6" xs="12">
+          <div class="app-intro" v-if="!hideIntro" >
+            <div class="app-jumbotron  _text-center">
+              <i-container>
                 <h3 class="intro-heading">Preview Markdown files with ease</h3>
-                <p class="_text-gray-60">Simply upload a markdown file to view it or Use our editor to write markdown and see its preview.</p>
+                <p class="_text-gray-50">Simply upload a markdown file to view it or Use our editor to write markdown and see its preview.</p>
               
                 <label for="select_file" class="btn-upload _margin-top-1-2 _margin-bottom-1 _margin-right-1">Upload file</label>
-                <button class="btn-noborder" @click="showPreview = true, hideIntro = true">Use Editor</button>
-                <input v-show="false" type="file" id="select_file" ref="mdFile" @change="selectedFile">
-              </i-column>
+                <i-tooltip variant="dark" size="sm">
+                  <i-button class="btn-noborder" @click="showPreview = true, hideIntro = true">Use Editor</i-button>
+                  <template slot="body">Write markdown in editor</template>
+                </i-tooltip>
 
-              <i-column xl="7" lg="6" md="6" sm="6" xs="12">
-                <img src="https://picsum.photos/700" alt="Sample Preview" class="image -responsive">
-              </i-column>
-            </i-row>
-            
+                <input v-show="false" type="file" id="select_file" ref="mdFile" @change="selectedFile">
+              </i-container>
+            </div>
+
+            <i-container class="app-screenshot">
+              <i-row class="_display-flex _align-items-center">
+                <i-column sm="5" class="text-screenshot">
+                  <h5 class="_padding-x-1-2">Markdown Text</h5>
+                  <img src="./assets/text-screenshot.png" alt="Sample Preview" class="image -responsive">
+                </i-column>
+
+                <i-column class="preview-arrows _display-xs-none _display-sm-flex">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="color: rgb(235, 179, 233);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                  </svg>
+                </i-column>
+                
+                <i-column sm="5" class=" preview-screenshot">
+                  <h5 class="_padding-x-1-2">It's Preview</h5>
+                  <img src="./assets/preview-screenshot.png" alt="Sample Preview" class="image -responsive">
+                </i-column>
+              </i-row>
+            </i-container>
+          </div>
+
+          <i-container>
             <i-row v-if="showPreview" class="_display-flex _align-items-stretch _flex-direction-sm-row">
               <!-- top row -->
-              <i-column xs="12" class="_display-flex _align-items-center _padding-y-1 _margin-bottom-1">
+              <i-column xs="12" class="_display-flex _align-items-center _flex-wrap _padding-y-1 _margin-bottom-1">
                 <!-- document name -->
-                <i-column xs="8" class="_padding-left-0">
+                <i-column sm="8" class="_padding-left-0">
                   
-                  <div class="">
+                  <div class="-align-left">
                     <label for="file_name" class="_margin-y-1-4 _text-gray-50">Document name</label> <br>
-                    <div class="_display-flex">
-                      <input type="text" v-model="filename" name="file_name" id="file_name" class="save_filename">
-                      <a v-if="mdtext != ''" href="javascript:void(0);" @click="saveFile" class="_margin-left-1 _display-flex _align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="color: dodgerblue; height: 20px; width: 20px; margin-right: 3px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                        </svg>
-                        Download
-                      </a>
+                    <div class="_display-flex _flex-wrap">
+                      <input type="text" v-model="filename" name="file_name" id="file_name" class="save_filename _margin-right-1 _margin-bottom-1">
+                      <i-tooltip v-if="mdtext != ''" variant="dark" size="sm">
+                        <a href="javascript:void(0);" @click="saveFile" class=" _display-flex _align-items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" style="color: lightsalmon; height: 20px; width: 20px; margin-right: 3px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                          </svg>
+                          Download
+                        </a>
+                        <template slot="body">Save markdown</template>
+                      </i-tooltip>
+                      
+                      
                     </div>
                   </div>
 
@@ -74,30 +103,30 @@
                 </i-column>
 
                 <!-- document word count -->
-                <i-column xs="4" class="text-counter _text-right">
+                <i-column sm="4" class="text-counter _text-right">
                   Words: {{word_count}} <br>
                   Characters: {{character_count}}
                 </i-column>
               </i-column>
 
-              <i-column sm="6">
-                <label for="md_text" class="_margin-0 _text-gray-50">
+              <i-column xs="6">
+                <label for="md_text" class="_margin-0 _text-gray-60">
                   <small class="_margin-bottom-0 _padding-0">Your Text</small>
                 </label>
               </i-column>
 
-              <i-column sm="6">
-                <small for="" class="_margin-bottom-0 _padding-0 _text-gray-50">Markdown Preview</small>
+              <i-column xs="6">
+                <small for="" class="_margin-bottom-0 _padding-0 _text-gray-60">Markdown Preview</small>
               </i-column>              
 
               <i-column sm="12" class="_padding-0 _display-flex">                
                 <!-- editor -->
                 <i-column sm="6" class="">
-                  <i-textarea id="md_text" class="_width-100" v-model="mdtext" placeholder="Enter your Markdown text here." rows="15"></i-textarea>
+                  <i-textarea id="md_text" class="_width-100" v-model="mdtext" placeholder="Enter your Markdown text here." rows="21"></i-textarea>
                 </i-column>
 
                 <!-- preview box -->
-                <i-column sm="6" class="">
+                <i-column sm="6" class="preview-col">
                   <div class="preview-box _height-100">
                     <vue-markdown v-if="mdtext != ''" :source="mdtext" class=""></vue-markdown>
 
@@ -118,9 +147,30 @@
           </i-container>          
       </i-layout-content>
       
-      <i-layout-footer class="_background-gray-20 _margin-top-2">
-        <div class="_text-center _padding-y-1-4">
-          Made by Akshay.
+      <i-layout-footer class="app-footer _padding-top-1 _padding-bottom-1-2 _margin-top-4">
+        <div class="custom-container">
+          <div class="_display-flex _justify-content-space-between _padding-top-1-4 _padding-bottom-0">
+            <div class="footer-buttons _display-flex _align-items-center">
+              <!-- Place this tag where you want the button to render. -->
+              <a class="github-button" href="https://github.com/root-0/vue_md_previewer/fork" 
+                  data-icon="octicon-repo-forked" data-size="large" 
+                  aria-label="Fork root-0/vue_md_previewer on GitHub">
+                Github
+              </a>
+              
+              <a href="https://www.linkedin.com/in/akshay-rajput/" class="btn-linkedin">
+                <span>LinkedIn</span>
+              <!-- <img src="./assets/linkedin.png" alt="Linkedin" style="height: 14px;"> -->
+              </a>
+            </div>
+            <div class="footer-credits _text-gray-40">
+              &lt;/&gt; by 
+              <i-tooltip variant="dark" size="sm">
+                <a href="https://root-0.github.io/" target="_blank" rel="noopener noreferrer">Akshay</a>
+                <template slot="body">Developer's website</template>
+              </i-tooltip>
+            </div>
+          </div>
         </div>
       </i-layout-footer>
     </i-layout>
@@ -221,12 +271,44 @@ export default {
 // font-family: 'JetBrains Mono', monospace;
 // font-family: 'Poppins', sans-serif; */
 
-
 $gray100 : #f3f4f6;
 $gray200 : #e5e7eb;
 $gray400 : #9ca3af;
 $gray700 : #374151;
 
+// $dark: #583d72;
+// $light: #9f5f80;
+// $accent: #ffba93;
+// $accentDark: #ff8e71;
+$try: rgb(235, 179, 233);
+
+$dark: darkmagenta;
+$orchid: orchid;
+$accent: lightsalmon;
+$offwhite: #fcfcfc;
+// setup theme here
+#app{
+  background: $offwhite;
+}
+.app-jumbotron{
+  background:$dark;
+  padding: 45px;
+}
+.app-footer, .app-navbar{
+  background: $dark !important;
+}
+.intro-heading{
+  color: $orchid;
+}
+a{
+  color:$accent !important;
+  transition: all ease 0.35s;
+  &:hover{
+    color: $orchid !important;
+  }
+}
+
+// other css
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -235,7 +317,7 @@ $gray700 : #374151;
   color: #333;
 
   .app-section{
-    min-height: calc(100vh - 150px);
+    min-height: calc(100vh - 120px);
   }
 
   .logo{
@@ -251,11 +333,10 @@ $gray700 : #374151;
   }
 
   .intro-heading{
-    font-family: 'Jetbrains Mono';
+    font-family: 'Jetbrains Mono', monospace;
     letter-spacing: 1px;
     line-height: 2rem;
     font-weight: bold;
-    color: $gray700;
   }
 
   #md_text{
@@ -265,22 +346,40 @@ $gray700 : #374151;
   .btn-upload{
     padding: 6px 12px;
     cursor: pointer;
-    border: 1px solid #ccc;
+    border: 1px solid $orchid;
+    background: $orchid;
+    color: white !important;
     border-radius: 5px;
+    transition: all ease 0.35s;
+
+    &:hover{
+      background: $accent;
+    }
   }
   .btn-noborder{
+    font-family: 'Jetbrains Mono', monospace;
     padding: 6px 12px;
     cursor: pointer;
     border:none;
+    color: $accent;
+    font-weight: 500;
     background: transparent;
 
     &:hover{
-      color: orange;
+      color: gold;
     }
 
     &:focus{
       outline:none;
-      color: blue;
+      color: $accent;
+    }
+  }
+  .btn-nav-upload{
+    color: gold;
+    padding: 4px;
+
+    &:hover{
+      text-decoration: underline;
     }
   }
   // input for filename
@@ -300,10 +399,11 @@ $gray700 : #374151;
   }
 
 
-  .theme_icon{
-    color: black;
+  .svg_icon{
+    color: $accent;
     height: 28px;
     width: 28px;
+    margin-top: 8px;
   }
   .preview-box{
     border: 1px dashed #ccc;
@@ -319,6 +419,57 @@ $gray700 : #374151;
     color: $gray200;
     font-size: 70px;
     line-height: 1px;
+  }
+
+  .custom-container{
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: auto;
+    margin-right: auto;;
+
+    @media screen and (min-width: 0){
+      max-width: 100%;
+    }
+    @media screen and (min-width: 576px){
+      max-width: 550px;
+    }
+    @media screen and (min-width: 767px){
+      max-width: 740px;
+    }
+    @media screen and (min-width: 992px) {
+      max-width: 962px;
+    }
+    @media screen and (min-width: 1200px) {
+      max-width: 1168px;
+    }
+
+
+    
+    
+  }
+
+  .btn-linkedin{
+    background: $orchid;
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
+    margin-top: -5px;
+    margin-left: 15px;
+    color:white !important;
+    font-size: 12px;
+    letter-spacing: 0.1px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all ease 0.35s;
+    &:hover{
+      text-decoration: none;
+      // border-color: $accent;
+      color: white;
+      background: $accent;
+    }
+  }
+
+  .footer-credits{
+    font-family: 'Ranchers', cursive;
+    letter-spacing: 1px;
   }
 }
 
