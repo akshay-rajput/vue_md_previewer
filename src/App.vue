@@ -49,7 +49,7 @@
                   <template slot="body">Write markdown in editor</template>
                 </i-tooltip>
 
-                <input v-show="false" type="file" id="select_file" ref="mdFile" @change="selectedFile">
+                <input v-show="false" type="file" id="select_file" ref="mdFile" accept=".md" @change="selectedFile">
               </i-container>
             </div>
 
