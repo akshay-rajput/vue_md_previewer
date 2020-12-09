@@ -12,15 +12,24 @@
             </span> 
             <span class="logo">ZAP</span>
           </i-navbar-brand>
-          <i-nav>
-              <i-nav-item>
-                <a href="javascript:void(0);" @click="saveFile" class="_float-right _display-flex _align-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" style="color: dodgerblue; height: 24px; width: 24px; margin-right: 3px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                  </svg>
-                  Save File
+          <i-nav class="">
+              <!-- <i-nav-item>
+                <a href="" class="">
+                  
+                  Home
                 </a>
               </i-nav-item>
+               -->
+              <i-nav-item v-if="hideIntro">
+                <label for="select_file_navbar" class=" _display-flex _align-items-center _cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="color: dodgerblue; height: 24px; width: 24px; margin-right: 3px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  Upload
+                </label>
+                <input v-show="false" type="file" accept=".md" id="select_file_navbar" ref="mdFile" @change="selectedFile">
+              </i-nav-item>
+
           </i-nav>
         </i-navbar>
       </i-layout-header>
@@ -28,30 +37,43 @@
       <i-layout-content class="app-section">
           <i-container>
             <i-row v-if="!hideIntro" class="_display-flex _align-items-center">
-              <i-column xl="3" lg="6" md="6" sm="8" xs="12">
+              <i-column xl="5" lg="6" md="6" sm="6" xs="12">
                 <h3 class="intro-heading">Preview Markdown files with ease</h3>
                 <p class="_text-gray-60">Simply upload a markdown file to view it or Use our editor to write markdown and see its preview.</p>
               
-                <button class="btn-upload _margin-top-1-2 _margin-bottom-1 _margin-right-1">Upload file</button>
-                <!-- <span class=""> OR </span> -->
+                <label for="select_file" class="btn-upload _margin-top-1-2 _margin-bottom-1 _margin-right-1">Upload file</label>
                 <button class="btn-noborder" @click="showPreview = true, hideIntro = true">Use Editor</button>
-                <input v-show="false" type="file" ref="myFile" @change="selectedFile">
+                <input v-show="false" type="file" id="select_file" ref="mdFile" @change="selectedFile">
               </i-column>
-              <i-column xl="3" lg="6" md="6" sm="8" xs="12">
+
+              <i-column xl="7" lg="6" md="6" sm="6" xs="12">
                 <img src="https://picsum.photos/700" alt="Sample Preview" class="image -responsive">
               </i-column>
             </i-row>
             
             <i-row v-if="showPreview" class="_display-flex _align-items-stretch _flex-direction-sm-row">
-              
+              <!-- top row -->
               <i-column xs="12" class="_display-flex _align-items-center _padding-y-1 _margin-bottom-1">
+                <!-- document name -->
                 <i-column xs="8" class="_padding-left-0">
                   
                   <div class="">
                     <label for="file_name" class="_margin-y-1-4 _text-gray-50">Document name</label> <br>
-                    <input type="text" v-model="filename" name="file_name" id="file_name" class="save_filename">
+                    <div class="_display-flex">
+                      <input type="text" v-model="filename" name="file_name" id="file_name" class="save_filename">
+                      <a v-if="mdtext != ''" href="javascript:void(0);" @click="saveFile" class="_margin-left-1 _display-flex _align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="color: dodgerblue; height: 20px; width: 20px; margin-right: 3px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                        Download
+                      </a>
+                    </div>
                   </div>
+
+                  
                 </i-column>
+
+                <!-- document word count -->
                 <i-column xs="4" class="text-counter _text-right">
                   Words: {{word_count}} <br>
                   Characters: {{character_count}}
@@ -62,16 +84,35 @@
                 <label for="md_text" class="_margin-0 _text-gray-50">
                   <small class="_margin-bottom-0 _padding-0">Your Text</small>
                 </label>
+              </i-column>
+
+              <i-column sm="6">
+                <small for="" class="_margin-bottom-0 _padding-0 _text-gray-50">Markdown Preview</small>
+              </i-column>              
+
+              <i-column sm="12" class="_padding-0 _display-flex">                
+                <!-- editor -->
+                <i-column sm="6" class="">
+                  <i-textarea id="md_text" class="_width-100" v-model="mdtext" placeholder="Enter your Markdown text here." rows="15"></i-textarea>
+                </i-column>
+
+                <!-- preview box -->
+                <i-column sm="6" class="">
+                  <div class="preview-box _height-100">
+                    <vue-markdown v-if="mdtext != ''" :source="mdtext" class=""></vue-markdown>
+
+                    <div class="no-preview _height-100 _justify-content-center _display-flex _flex-direction-column _align-items-center" v-if="mdtext == ''">
+                      <p class="no-preview-emote">(•ิ_•ิ)?</p>
+                      <p class="_text-gray-60">Add markdown in editor or upload file to preview</p>
+                    </div>
+                  </div>
+                  
+                </i-column>
+              </i-column>
+
+              <!-- <i-column sm="6" class="_display-flex _flex-direction-column">
                 
-                <i-textarea id="md_text" class="_width-100" v-model="mdtext" placeholder="Enter your Markdown text here." rows="15"></i-textarea>
-              </i-column>
-              
-              <i-column sm="6" class="_display-flex _flex-direction-column">
-                <label for="_margin-0 _text-gray-50">
-                  <small for="" class="_margin-bottom-0 _padding-0 _text-gray-50">Markdown Preview</small>
-                </label>
-                <vue-markdown :source="mdtext" class="preview-box"></vue-markdown>
-              </i-column>
+              </i-column> -->
             </i-row>
 
           </i-container>          
@@ -100,20 +141,20 @@ export default {
       filename: 'Untitled.md',
       fileExtension: 'md',
       fileUploaded: false,
-      hideIntro: true,
-      showPreview: true
+      hideIntro: false,
+      showPreview: false
     }
   },
   watch: {
     mdtext: function(newvalue){
-      this.word_count = newvalue.length;
+      this.character_count = newvalue.length;
       // string[] text = newvalue;
       if(newvalue != ''){
         const regexp = /\s/;
-        this.character_count = newvalue.split(regexp).length;
+        this.word_count = newvalue.split(regexp).length;
       }
       else{
-        this.character_count = 0;
+        this.word_count = 0;
       }
     }
   },
@@ -126,9 +167,9 @@ export default {
     },
     selectedFile() {
       console.log('selected a file');
-      console.log(this.$refs.myFile.files[0]);
+      console.log(this.$refs.mdFile.files[0]);
       
-      let file = this.$refs.myFile.files[0];
+      let file = this.$refs.mdFile.files[0];
       // get extension of uploaded file
       let fileExtension = file.name.split('.').pop();
       
@@ -164,7 +205,7 @@ export default {
       };
 
       if(this.mdtext != ''){
-        let saveFileName = this.filename + this.fileExtension;
+        let saveFileName = this.filename + '.'+ this.fileExtension;
         downloadToFile(this.mdtext, saveFileName, 'text/plain');
       }
       else{
@@ -265,13 +306,19 @@ $gray700 : #374151;
     width: 28px;
   }
   .preview-box{
-    border: 1px solid #ccc;
+    border: 1px dashed #ccc;
     padding-left: 10px;
     word-wrap: break-word;
-    height: 380px; 
+    // height: 380px; 
     overflow: auto;
     // width: 100%;
     /* height: 15rem; */
+  }
+
+  .no-preview-emote{
+    color: $gray200;
+    font-size: 70px;
+    line-height: 1px;
   }
 }
 
