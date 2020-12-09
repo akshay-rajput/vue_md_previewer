@@ -3,12 +3,12 @@
 A markdown viewer made with **Vue.js**, [vue-markdown](https://github.com/miaolz123/vue-markdown) and **[Inkline](https://inkline.io/)** library.
 
 ### App Landing Page
-![Vue MD Previewer]("./assets/app-landing.png")
+![Vue MD Previewer]("/src/assets/app-landing.png")
 
 ### App Other Pages
-![Vue MD Previewer]("./assets/app-editor.png")
+![Vue MD Previewer]("src/assets/app-editor.png")
 
-![Vue MD Previewer]("./assets/app-emptystate.png")
+![Vue MD Previewer]("./src/assets/app-emptystate.png")
 ```
 # Project setup
 
