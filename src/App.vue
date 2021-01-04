@@ -152,7 +152,7 @@
           <div class="_display-flex _justify-content-space-between _padding-top-1-4 _padding-bottom-0">
             <div class="footer-buttons _display-flex _align-items-center">
               <!-- Place this tag where you want the button to render. -->
-              <a class="github-button" href="https://github.com/root-0/vue_md_previewer/fork" 
+              <a class="github-button" href="https://github.com/akshay-rajput/vue_md_previewer/fork" 
                   data-icon="octicon-repo-forked" data-size="large" 
                   aria-label="Fork root-0/vue_md_previewer on GitHub">
                 Github
@@ -166,7 +166,7 @@
             <div class="footer-credits _text-gray-40">
               &lt;/&gt; by 
               <i-tooltip variant="dark" size="sm">
-                <a href="https://root-0.github.io/" target="_blank" rel="noopener noreferrer">Akshay</a>
+                <a href="https://akshayr.netlify.app/" target="_blank" rel="noopener noreferrer">Akshay</a>
                 <template slot="body">Developer's website</template>
               </i-tooltip>
             </div>
